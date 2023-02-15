@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+  FlatList,
+} from "react-native";
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState("");
@@ -10,7 +19,19 @@ export default function App() {
   }
 
   function addGoalHandler() {
-    setGoalList((currentGoalList) => [...currentGoalList, enteredGoalText]);
+    setGoalList((currentGoalList) => [
+      ...currentGoalList,
+      { text: enteredGoalText, id: Math.random().toString() },
+    ]);
+
+    // fetch("https://mbtmi-96d3c-default-rtdb.firebaseio.com/events.json", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     title: "Test",
+    //     body: "I am testing!",
+    //     userId: 1,
+    //   }),
+    // })
   }
 
   return (
@@ -24,10 +45,19 @@ export default function App() {
         <Button title="목표 추가" onPress={addGoalHandler} />
       </View>
       <View style={styles.goalsContainer}>
-        {/* <Text>List of goals...</Text> */}
-        {goalList.map((item) => (
-          <Text key={item}>{item}</Text>
-        ))}
+        <FlatList
+          data={goalList}
+          renderItem={(itemData) => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+        />
       </View>
       {/* <Text style={styles.dummyText}>This is WestCoast!!!!</Text>
       <Text style={styles.dummyText}>Test App</Text>
@@ -66,5 +96,15 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     flex: 4,
+  },
+  goalItem: {
+    margin: 8,
+    padding: 8,
+    borderRadius: 6,
+    backgroundColor: "#9753f0",
+  },
+  goalText: {
+    color: "white",
+    fontSize: 14,
   },
 });
