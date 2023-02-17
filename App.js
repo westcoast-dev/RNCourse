@@ -22,6 +22,12 @@ export default function App() {
     ]);
   }
 
+  const deleteHandler = (id) => {
+    setGoalList((currentGoalList) => {
+      return currentGoalList.filter((goal) => goal.id !== id);
+    });
+  };
+
   // fetch("https://mbtmi-96d3c-default-rtdb.firebaseio.com/events.json", {
   //   method: "POST",
   //   body: JSON.stringify({
@@ -38,7 +44,13 @@ export default function App() {
         <FlatList
           data={goalList}
           renderItem={(itemData) => {
-            return <GoalItem itemData={itemData} />;
+            return (
+              <GoalItem
+                text={itemData.item.text}
+                id={itemData.item.id}
+                onDeleteItem={deleteHandler}
+              />
+            );
           }}
           keyExtractor={(item, index) => {
             return item.id;
