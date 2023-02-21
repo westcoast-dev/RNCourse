@@ -9,6 +9,7 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import GoalInput from "./components/GoalInput";
 import GoalItem from "./components/GoalItem";
 
@@ -20,11 +21,16 @@ export default function App() {
     setIsVisible(true);
   }
 
+  function modalCloseHandler() {
+    setIsVisible(false);
+  }
+
   function addGoalHandler(enteredGoalText) {
     setGoalList((currentGoalList) => [
       ...currentGoalList,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+    modalCloseHandler();
   }
 
   const deleteHandler = (id) => {
@@ -43,27 +49,37 @@ export default function App() {
   // })
 
   return (
-    <View style={styles.appContainer}>
-      <Button title="새로운 목표 추가" color="#5c0acc" onPress={modalHandler} />
-      <GoalInput visible={isVisible} addGoalHandler={addGoalHandler} />
-      <View style={styles.goalsContainer}>
-        <FlatList
-          data={goalList}
-          renderItem={(itemData) => {
-            return (
-              <GoalItem
-                text={itemData.item.text}
-                id={itemData.item.id}
-                onDeleteItem={deleteHandler}
-              />
-            );
-          }}
-          keyExtractor={(item, index) => {
-            return item.id;
-          }}
+    <>
+      <StatusBar style="light" />
+      <View style={styles.appContainer}>
+        <Button
+          title="새로운 목표 추가"
+          color="#a065ec"
+          onPress={modalHandler}
         />
-      </View>
-      {/* <Text style={styles.dummyText}>This is WestCoast!!!!</Text>
+        <GoalInput
+          visible={isVisible}
+          addGoalHandler={addGoalHandler}
+          onCancel={modalCloseHandler}
+        />
+        <View style={styles.goalsContainer}>
+          <FlatList
+            data={goalList}
+            renderItem={(itemData) => {
+              return (
+                <GoalItem
+                  text={itemData.item.text}
+                  id={itemData.item.id}
+                  onDeleteItem={deleteHandler}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => {
+              return item.id;
+            }}
+          />
+        </View>
+        {/* <Text style={styles.dummyText}>This is WestCoast!!!!</Text>
       <Text style={styles.dummyText}>Test App</Text>
       <Button
         title="로그인"
@@ -71,7 +87,8 @@ export default function App() {
           Alert.alert("로그인 성공");
         }}
       /> */}
-    </View>
+      </View>
+    </>
   );
 }
 
